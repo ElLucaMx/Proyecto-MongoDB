@@ -1,12 +1,12 @@
-db.plataformas.insertMany([
+[
   {
     nombre: "Nintendo",
-    fechaFundacion: ISODate("1889-09-23T00:00:00Z"),
+    fechaFundacion: new Date("1889-09-23T00:00:00Z"),
     valorEnBolsa: 70000000000,
     exclusivos: [
       {
         titulo: "The Legend of Zelda: Breath of the Wild",
-        fechaLanzamiento: ISODate("2017-03-03T00:00:00Z"),
+        fechaLanzamiento: new Date("2017-03-03T00:00:00Z"),
         genero: "Acción-Aventura",
         finanzas: { ventas: 20000000, recaudacion: 500000000 },
         jugabilidad: {
@@ -26,7 +26,7 @@ db.plataformas.insertMany([
       },
       {
         titulo: "Super Mario Odyssey",
-        fechaLanzamiento: ISODate("2017-10-27T00:00:00Z"),
+        fechaLanzamiento: new Date("2017-10-27T00:00:00Z"),
         genero: "Plataformas",
         finanzas: { ventas: 18000000, recaudacion: 450000000 },
         jugabilidad: {
@@ -46,7 +46,7 @@ db.plataformas.insertMany([
       },
       {
         titulo: "Animal Crossing: New Horizons",
-        fechaLanzamiento: ISODate("2020-03-20T00:00:00Z"),
+        fechaLanzamiento: new Date("2020-03-20T00:00:00Z"),
         genero: "Simulación",
         finanzas: { ventas: 30000000, recaudacion: 600000000 },
         jugabilidad: {
@@ -66,7 +66,7 @@ db.plataformas.insertMany([
       },
       {
         titulo: "Super Smash Bros. Ultimate",
-        fechaLanzamiento: ISODate("2018-12-07T00:00:00Z"),
+        fechaLanzamiento: new Date("2018-12-07T00:00:00Z"),
         genero: "Lucha",
         finanzas: { ventas: 30000000, recaudacion: 1000000000 },
         jugabilidad: {
@@ -90,7 +90,7 @@ db.plataformas.insertMany([
       exclusivos: [
         {
           titulo: "Super Mario Bros.",
-          fechaLanzamiento: ISODate("1985-09-13T00:00:00Z"),
+          fechaLanzamiento: new Date("1985-09-13T00:00:00Z"),
           genero: "Plataformas",
           finanzas: { ventas: 40000000, recaudacion: 1000000000 },
           jugabilidad: {
@@ -113,89 +113,94 @@ db.plataformas.insertMany([
   },
   {
     nombre: "PlayStation",
-    fechaFundacion: ISODate("1946-05-07T00:00:00Z"),
+    fechaFundacion: new Date("1946-05-07T00:00:00Z"),
     valorEnBolsa: 140000000000,
     exclusivos: [
-      {  titulo: "The Last of Us Part II",
-         fechaLanzamiento: ISODate("2020-06-19T00:00:00Z"),
-         genero: "Acción-Aventura",
-         finanzas: { ventas: 10000000, recaudacion: 400000000 },
-         jugabilidad: { plataformas: ["PlayStation 4", "PlayStation 5"], modoJuego: ["Un jugador"] },
-         puntuacionCritica: 93.0,
-         idioma: ["Inglés", "Español", "Francés"],
-         descripcion: "Una intensa historia postapocalíptica que sigue la venganza y la redención, con un fuerte enfoque en la narrativa y el desarrollo de personajes.",
-         desarrollo: { desarrolladora: "Naughty Dog", personas: [
-           { nombre: "Neil Druckmann", rol: "Director" },
-           { nombre: "Bruce Straley", rol: "Productor" }
-         ] }
+      {
+        titulo: "The Last of Us Part II",
+        fechaLanzamiento: new Date("2020-06-19T00:00:00Z"),
+        genero: "Acción-Aventura",
+        finanzas: { ventas: 10000000, recaudacion: 400000000 },
+        jugabilidad: { plataformas: ["PlayStation 4", "PlayStation 5"], modoJuego: ["Un jugador"] },
+        puntuacionCritica: 93.0,
+        idioma: ["Inglés", "Español", "Francés"],
+        descripcion: "Una intensa historia postapocalíptica que sigue la venganza y la redención, con un fuerte enfoque en la narrativa y el desarrollo de personajes.",
+        desarrollo: { desarrolladora: "Naughty Dog", personas: [
+          { nombre: "Neil Druckmann", rol: "Director" },
+          { nombre: "Bruce Straley", rol: "Productor" }
+        ] }
       },
-      {  titulo: "God of War",
-         fechaLanzamiento: ISODate("2018-04-20T00:00:00Z"),
-         genero: "Acción-Aventura",
-         finanzas: { ventas: 12000000, recaudacion: 500000000 },
-         jugabilidad: { plataformas: ["PlayStation 4", "PlayStation 5"], modoJuego: ["Un jugador"] },
-         puntuacionCritica: 94.0,
-         idioma: ["Inglés", "Nórdico antiguo"],
-         descripcion: "Kratos, acompañado por su hijo Atreus, se embarca en una travesía que mezcla la mitología nórdica con elementos de acción y drama.",
-         desarrollo: { desarrolladora: "Santa Monica Studio", personas: [
-           { nombre: "Cory Barlog", rol: "Director" },
-           { nombre: "Richard Gaubert", rol: "Productor Ejecutivo" }
-         ] }
+      {
+        titulo: "God of War",
+        fechaLanzamiento: new Date("2018-04-20T00:00:00Z"),
+        genero: "Acción-Aventura",
+        finanzas: { ventas: 12000000, recaudacion: 500000000 },
+        jugabilidad: { plataformas: ["PlayStation 4", "PlayStation 5"], modoJuego: ["Un jugador"] },
+        puntuacionCritica: 94.0,
+        idioma: ["Inglés", "Nórdico antiguo"],
+        descripcion: "Kratos, acompañado por su hijo Atreus, se embarca en una travesía que mezcla la mitología nórdica con elementos de acción y drama.",
+        desarrollo: { desarrolladora: "Santa Monica Studio", personas: [
+          { nombre: "Cory Barlog", rol: "Director" },
+          { nombre: "Richard Gaubert", rol: "Productor Ejecutivo" }
+        ] }
       },
-      {  titulo: "Bloodborne",
-         fechaLanzamiento: ISODate("2015-03-24T00:00:00Z"),
-         genero: "RPG de Acción",
-         finanzas: { ventas: 5000000, recaudacion: 200000000 },
-         jugabilidad: { plataformas: ["PlayStation 4"], modoJuego: ["Un jugador"] },
-         puntuacionCritica: 92.0,
-         idioma: ["Inglés", "Japonés"],
-         descripcion: "Un oscuro y retador juego de rol de acción en un mundo gótico, donde los jugadores deben enfrentarse a criaturas terroríficas y descubrir secretos ancestrales.",
-         desarrollo: { desarrolladora: "FromSoftware", personas: [
-           { nombre: "Hidetaka Miyazaki", rol: "Director" },
-           { nombre: "Yui Tanimura", rol: "Diseñadora" }
-         ] }
+      {
+        titulo: "Bloodborne",
+        fechaLanzamiento: new Date("2015-03-24T00:00:00Z"),
+        genero: "RPG de Acción",
+        finanzas: { ventas: 5000000, recaudacion: 200000000 },
+        jugabilidad: { plataformas: ["PlayStation 4"], modoJuego: ["Un jugador"] },
+        puntuacionCritica: 92.0,
+        idioma: ["Inglés", "Japonés"],
+        descripcion: "Un oscuro y retador juego de rol de acción en un mundo gótico, donde los jugadores deben enfrentarse a criaturas terroríficas y descubrir secretos ancestrales.",
+        desarrollo: { desarrolladora: "FromSoftware", personas: [
+          { nombre: "Hidetaka Miyazaki", rol: "Director" },
+          { nombre: "Yui Tanimura", rol: "Diseñadora" }
+        ] }
       },
-      {  titulo: "Uncharted 4: A Thief's End",
-         fechaLanzamiento: ISODate("2016-05-10T00:00:00Z"),
-         genero: "Acción-Aventura",
-         finanzas: { ventas: 12000000, recaudacion: 550000000 },
-         jugabilidad: { plataformas: ["PlayStation 4"], modoJuego: ["Un jugador"] },
-         puntuacionCritica: 93.0,
-         idioma: ["Inglés"],
-         descripcion: "Nathan Drake regresa en una última aventura llena de acción, enigmas y paisajes impresionantes, concluyendo una saga legendaria.",
-         desarrollo: { desarrolladora: "Naughty Dog", personas: [
-           { nombre: "Neil Druckmann", rol: "Director" },
-           { nombre: "Bruce Straley", rol: "Productor" }
-         ] }
+      {
+        titulo: "Uncharted 4: A Thief's End",
+        fechaLanzamiento: new Date("2016-05-10T00:00:00Z"),
+        genero: "Acción-Aventura",
+        finanzas: { ventas: 12000000, recaudacion: 550000000 },
+        jugabilidad: { plataformas: ["PlayStation 4"], modoJuego: ["Un jugador"] },
+        puntuacionCritica: 93.0,
+        idioma: ["Inglés"],
+        descripcion: "Nathan Drake regresa en una última aventura llena de acción, enigmas y paisajes impresionantes, concluyendo una saga legendaria.",
+        desarrollo: { desarrolladora: "Naughty Dog", personas: [
+          { nombre: "Neil Druckmann", rol: "Director" },
+          { nombre: "Bruce Straley", rol: "Productor" }
+        ] }
       }
     ],
     subempresa: {
       nombre: "PlayStation Studios Indie",
       exclusivos: [
-        {  titulo: "Journey",
-           fechaLanzamiento: ISODate("2012-03-13T00:00:00Z"),
-           genero: "Aventura",
-           finanzas: { ventas: 2000000, recaudacion: 50000000 },
-           jugabilidad: { plataformas: ["PlayStation 3", "PlayStation 4", "PC"], modoJuego: ["Un jugador", "Multijugador"] },
-           puntuacionCritica: 92.0,
-           idioma: ["Inglés", "Español", "Francés"],
-           descripcion: "Un juego artístico y emotivo que lleva a los jugadores a un viaje a través de un desierto misterioso en busca de conexión.",
-           desarrollo: { desarrolladora: "Thatgamecompany", personas: [
-             { nombre: "Jenova Chen", rol: "Director" },
-             { nombre: "Kellee Santiago", rol: "Productor" }
-           ] }
+        {
+          titulo: "Journey",
+          fechaLanzamiento: new Date("2012-03-13T00:00:00Z"),
+          genero: "Aventura",
+          finanzas: { ventas: 2000000, recaudacion: 50000000 },
+          jugabilidad: { plataformas: ["PlayStation 3", "PlayStation 4", "PC"], modoJuego: ["Un jugador", "Multijugador"] },
+          puntuacionCritica: 92.0,
+          idioma: ["Inglés", "Español", "Francés"],
+          descripcion: "Un juego artístico y emotivo que lleva a los jugadores a un viaje a través de un desierto misterioso en busca de conexión.",
+          desarrollo: { desarrolladora: "Thatgamecompany", personas: [
+            { nombre: "Jenova Chen", rol: "Director" },
+            { nombre: "Kellee Santiago", rol: "Productor" }
+          ] }
         }
       ]
     }
   },
   {
     nombre: "Xbox",
-    fechaFundacion: ISODate("2001-11-15T00:00:00Z"),
+    fechaFundacion: new Date("2001-11-15T00:00:00Z"),
     valorEnBolsa: 220000000000,
     exclusivos: [
       {
         titulo: "Halo Infinite",
-        fechaLanzamiento: ISODate("2021-12-08T00:00:00Z"),
+        fechaLanzamiento: new Date("2021-12-08T00:00:00Z"),
         genero: "Shooter en primera persona",
         finanzas: { ventas: 8000000, recaudacion: 350000000 },
         jugabilidad: { plataformas: ["Xbox Series X/S", "Xbox One", "PC"], modoJuego: ["Un jugador", "Multijugador"] },
@@ -209,7 +214,7 @@ db.plataformas.insertMany([
       },
       {
         titulo: "Forza Horizon 5",
-        fechaLanzamiento: ISODate("2021-11-09T00:00:00Z"),
+        fechaLanzamiento: new Date("2021-11-09T00:00:00Z"),
         genero: "Carreras",
         finanzas: { ventas: 7000000, recaudacion: 300000000 },
         jugabilidad: { plataformas: ["Xbox Series X/S", "Xbox One", "PC"], modoJuego: ["Multijugador", "Un jugador"] },
@@ -223,7 +228,7 @@ db.plataformas.insertMany([
       },
       {
         titulo: "Gears 5",
-        fechaLanzamiento: ISODate("2019-09-10T00:00:00Z"),
+        fechaLanzamiento: new Date("2019-09-10T00:00:00Z"),
         genero: "Shooter en tercera persona",
         finanzas: { ventas: 4000000, recaudacion: 150000000 },
         jugabilidad: { plataformas: ["Xbox Series X/S", "Xbox One", "PC"], modoJuego: ["Multijugador", "Un jugador"] },
@@ -237,7 +242,7 @@ db.plataformas.insertMany([
       },
       {
         titulo: "Halo: Combat Evolved",
-        fechaLanzamiento: ISODate("2001-11-15T00:00:00Z"),
+        fechaLanzamiento: new Date("2001-11-15T00:00:00Z"),
         genero: "Shooter en primera persona",
         finanzas: { ventas: 5000000, recaudacion: 200000000 },
         jugabilidad: { plataformas: ["Xbox", "PC"], modoJuego: ["Un jugador", "Multijugador"] },
@@ -255,7 +260,7 @@ db.plataformas.insertMany([
       exclusivos: [
         {
           titulo: "Ori and the Will of the Wisps",
-          fechaLanzamiento: ISODate("2020-03-11T00:00:00Z"),
+          fechaLanzamiento: new Date("2020-03-11T00:00:00Z"),
           genero: "Plataformas, Aventura",
           finanzas: { ventas: 3000000, recaudacion: 100000000 },
           jugabilidad: { plataformas: ["Xbox One", "Xbox Series X/S", "PC"], modoJuego: ["Un jugador"] },
@@ -270,5 +275,4 @@ db.plataformas.insertMany([
       ]
     }
   }
-]);
-
+]
