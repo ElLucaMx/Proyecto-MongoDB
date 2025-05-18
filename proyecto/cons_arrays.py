@@ -105,7 +105,7 @@ def _consulta_juegos_multijugador_por_plataforma(coll):
     ]
     resultados = list(coll.aggregate(pipeline))
     if not resultados:
-        print("ℹ️ No se encontraron juegos multijugador en la base de datos.")
+        print("No se encontraron juegos multijugador en la base de datos.")
         return
 
     print(f"\nResultados: plataformas con títulos multijugador")
