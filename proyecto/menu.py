@@ -5,8 +5,9 @@ from consultas import consulta_simple, consulta_array, consulta_embebido, consul
 from db import get_collection
 
 def run_menu():
+    salir=False
     coll = get_collection()
-    while True:
+    while salir==False:
         print("\n=== MENÚ PRINCIPAL ===")
         print("1) Insertar documento")
         print("2) Eliminar documento")
@@ -25,7 +26,7 @@ def run_menu():
             consultas_menu(coll)
         elif opcion == "5":
             print("– ¡Hasta luego!")
-            break
+            salir=True
         else:
             print("Opción no válida. Intenta de nuevo.")
 
