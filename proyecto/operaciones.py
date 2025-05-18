@@ -20,7 +20,7 @@ def insertar_documento(coll, doc):
 
 def eliminar_uno(coll, filtro):
     """
-    Elimina un solo documento que cumpla el filtro pasado.
+    Elimina un solo documento que cumpla el filtro.
     """
     try:
         res = coll.delete_one(filtro)
