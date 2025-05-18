@@ -1,15 +1,14 @@
 # menu.py
 
-import re
-from datetime import datetime
-
-from operaciones import insertar_documento
+import json
+from operaciones import eliminar_uno, eliminar_varios   # <-- IMPORTAR AQUÍ
 from db import get_collection
 
 def run_menu():
     coll = get_collection()
 
-    while True:
+    opcion = ""
+    while opcion != "5":
         print("\n=== MENÚ PRINCIPAL ===")
         print("1) Insertar documento")
         print("2) Eliminar documento")
@@ -19,21 +18,73 @@ def run_menu():
         opcion = input("Elige una opción: ").strip()
 
         if opcion == "1":
-            insertar_menu(coll)
+            insertar_menu(coll)       # Ya implementado anteriormente
         elif opcion == "2":
-            # Lógica de eliminación...
-            pass
+            eliminar_menu(coll)
         elif opcion == "3":
-            # Lógica de actualización...
-            pass
+            actualizar_menu(coll)     # (pendiente de implementación)
         elif opcion == "4":
-            # Lógica de consultas...
-            pass
+            consultas_menu(coll)      # (pendiente de implementación)
         elif opcion == "5":
             print("– ¡Hasta luego!")
-            break
         else:
             print("❌ Opción no válida. Intenta de nuevo.")
+
+def eliminar_menu(coll):
+    """
+    1) Consulta todos los nombres de plataformas existentes.
+    2) Los muestra al usuario (enumerados).
+    3) El usuario escribe exactamente uno de esos nombres para borrar.
+       - Si escribe 'salir', se cancela y vuelve al menú.
+       - Si el nombre no está en la lista, se informa y se regresa al menú.
+    4) Si existe, muestra el _id y el nombre, pide confirmación (s/n).
+       - Si confirma con 's', llama a eliminar_uno(coll, {"nombre": nombre}).
+       - Si no, vuelve al menú.
+    """
+
+    print("\n--- ELIMINAR DOCUMENTO ---")
+    print("Escribe 'salir' en cualquier momento para cancelar.\n")
+
+    # 1) Obtener todos los nombres únicos de la colección
+    nombres = coll.distinct("nombre")
+    if not nombres:
+        print("⚠️  La colección está vacía. No hay nada para eliminar.")
+        return
+
+    # 2) Mostrar la lista de nombres al usuario
+    print("Plataformas disponibles para eliminar:")
+    for idx, n in enumerate(sorted(nombres), start=1):
+        print(f"  [{idx}]  {n}")
+    print()
+
+    # 3) El usuario ingresa el nombre exacto (o 'salir')
+    nombre_input = input("Escribe el nombre EXACTO de la plataforma que quieres eliminar (o 'salir'): ").strip()
+    if nombre_input.lower() == "salir":
+        print("⚠️  Eliminación cancelada por el usuario.")
+        return
+
+    if nombre_input not in nombres:
+        print(f"❌  El nombre '{nombre_input}' no existe en la base de datos.")
+        return
+
+    # 4) Ya sabemos que existe: buscamos ese documento
+    doc = coll.find_one({"nombre": nombre_input})
+    if doc is None:
+        # Aunque lo comprobamos con distinct, por si acaso:
+        print("❌  Error inesperado: no se encontró el documento en la base de datos.")
+        return
+
+    _id_str = str(doc.get("_id", "<sin _id>"))
+    print(f"\nDocumento encontrado:")
+    print(f"  _id: {_id_str}")
+    print(f"  nombre: {doc.get('nombre', '<sin nombre>')}")
+    print()
+
+    confirmar = input("¿Deseas eliminar este documento? (s/n): ").strip().lower()
+    if confirmar == "s":
+        eliminar_uno(coll, {"_id": doc["_id"]})
+    else:
+        print("⚠️  Eliminación cancelada por el usuario.")
 
 def insertar_menu(coll):
     """
