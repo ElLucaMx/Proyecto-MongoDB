@@ -47,7 +47,7 @@ def _ventas_totales_top3(coll):
     ]
     resultados = list(coll.aggregate(pipeline))
     if not resultados:
-        print("ℹ️ No se obtuvieron resultados de agregación (quizá no haya datos).")
+        print("No se obtuvieron resultados de agregación (quizá no haya datos).")
         return
 
     for doc in resultados:
