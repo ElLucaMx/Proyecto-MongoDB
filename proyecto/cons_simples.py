@@ -100,7 +100,7 @@ def _consulta_juegos_punt95(coll):
     ]
     resultados = list(coll.aggregate(pipeline))
     if not resultados:
-        print("ℹ️\u00a0No hay juegos con puntuación \u2265\u00a095.")
+        print("\u00a0No hay juegos con puntuación \u2265\u00a095.")
         return
 
     for doc in resultados:
