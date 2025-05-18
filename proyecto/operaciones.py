@@ -18,19 +18,28 @@ def insertar_documento(coll, doc):
         print(f"\n❌ Error al insertar el documento: {e}")
 
 
-def insertar_varios(coll, lista_docs):
-    try:
-        resultado = coll.insert_many(lista_docs)
-        print(f"{len(resultado.inserted_ids)} documentos insertados.")
-    except PyMongoError as e:
-        print("Error al insertar varios documentos:", e)
-
 def eliminar_uno(coll, filtro):
+    """
+    Elimina un solo documento que cumpla el filtro pasado.
+    """
     try:
         res = coll.delete_one(filtro)
-        print(f"{res.deleted_count} documento eliminado.")
+        if res.deleted_count == 0:
+            print("⚠️  No se encontró ningún documento que coincidiera con ese filtro.")
+        else:
+            print(f"✅  Se eliminó 1 documento.")
     except PyMongoError as e:
-        print("Error al eliminar:", e)
+        print(f"❌  Error al eliminar documento: {e}")
+
+def eliminar_varios(coll, filtro):
+    """
+    Elimina todos los documentos que cumplan el filtro.
+    """
+    try:
+        res = coll.delete_many(filtro)
+        print(f"✅  Se eliminaron {res.deleted_count} documentos.")
+    except PyMongoError as e:
+        print(f"❌  Error al eliminar documentos: {e}")
 
 def eliminar_varios(coll, filtro):
     try:
@@ -40,11 +49,22 @@ def eliminar_varios(coll, filtro):
         print("Error al eliminar varios:", e)
 
 def actualizar_uno(coll, filtro, cambios):
+    """
+    Actualiza un único documento que cumpla el filtro.
+    - coll: colección MongoDB
+    - filtro: dict con las condiciones de búsqueda (p. ej. {"_id": ObjectId(...)})
+    - cambios: dict con el operador de actualización (p. ej. {"$set": {"campo": nuevo_valor}})
+    """
     try:
         res = coll.update_one(filtro, cambios)
-        print(f"{res.modified_count} documento modificado.")
+        if res.matched_count == 0:
+            print("⚠️ No se encontró ningún documento que coincidiera con ese filtro.")
+        elif res.modified_count == 0:
+            print("ℹ️ El documento ya tenía ese valor (no se modificó nada).")
+        else:
+            print(f"✅ Se actualizó 1 documento correctamente.")
     except PyMongoError as e:
-        print("Error al actualizar:", e)
+        print(f"❌ Error al actualizar el documento: {e}")
 
 def actualizar_varios(coll, filtro, cambios):
     try:

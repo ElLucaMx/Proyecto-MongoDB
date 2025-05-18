@@ -1,14 +1,16 @@
 # menu.py
 
-import json
-from operaciones import eliminar_uno, eliminar_varios   # <-- IMPORTAR AQUÍ
+import re
+from datetime import datetime
+
+from operaciones import insertar_documento, eliminar_uno, eliminar_varios, actualizar_uno
 from db import get_collection
 
 def run_menu():
+    salir=False
     coll = get_collection()
 
-    opcion = ""
-    while opcion != "5":
+    while salir==False:
         print("\n=== MENÚ PRINCIPAL ===")
         print("1) Insertar documento")
         print("2) Eliminar documento")
@@ -18,17 +20,156 @@ def run_menu():
         opcion = input("Elige una opción: ").strip()
 
         if opcion == "1":
-            insertar_menu(coll)       # Ya implementado anteriormente
+            insertar_menu(coll)
         elif opcion == "2":
             eliminar_menu(coll)
         elif opcion == "3":
-            actualizar_menu(coll)     # (pendiente de implementación)
+            actualizar_menu(coll)
         elif opcion == "4":
-            consultas_menu(coll)      # (pendiente de implementación)
+            consultas_menu(coll)
         elif opcion == "5":
             print("– ¡Hasta luego!")
+            salir=True
         else:
             print("❌ Opción no válida. Intenta de nuevo.")
+
+def actualizar_menu(coll):
+    """
+    Pasos:
+    1) Obtiene todos los nombres existentes en la colección.
+    2) Muestra la lista enumerada de nombres.
+    3) El usuario escribe el nombre EXACTO que quiere actualizar (o 'salir' para cancelar).
+    4) Si no existe, muestra error y retorna.
+    5) Si existe, muestra el documento encontrado (solo _id y nombre) y pregunta qué campo actualizar:
+       a) nombre
+       b) fechaFundacion
+       c) valorEnBolsa
+    6) Según elección, pide el nuevo valor (validándolo en cada caso).
+    7) Muestra un resumen de la actualización propuesta y pide confirmación (s/n).
+    8) Si confirma, llama a actualizar_uno(...) con el filtro correspondiente y el operador $set. Luego imprime resultado.
+       Si no confirma, informa que se canceló y retorna.
+    """
+
+    print("\n--- ACTUALIZAR DOCUMENTO ---")
+    print("Escribe 'salir' en cualquier momento para cancelar.\n")
+
+    # 1) Obtener todos los nombres únicos
+    nombres = coll.distinct("nombre")
+    if not nombres:
+        print("⚠️ La colección está vacía. No hay nada para actualizar.")
+        return
+
+    # 2) Mostrar la lista enumerada al usuario
+    print("Plataformas disponibles para actualizar:")
+    for idx, n in enumerate(sorted(nombres), start=1):
+        print(f"  [{idx}]  {n}")
+    print()
+
+    # 3) Pedir nombre exacto (o 'salir')
+    nombre_input = input("Escribe el nombre EXACTO de la plataforma a actualizar (o 'salir'): ").strip()
+    if nombre_input.lower() == "salir":
+        print("⚠️ Actualización cancelada por el usuario.")
+        return
+
+    if nombre_input not in nombres:
+        print(f"❌ El nombre '{nombre_input}' no existe en la base de datos.")
+        return
+
+    # 4) Recuperar documento completo para mostrar _id y nombre
+    doc = coll.find_one({"nombre": nombre_input})
+    if doc is None:
+        print("❌ Error inesperado: no se pudo recuperar el documento.")
+        return
+
+    _id_str = str(doc.get("_id", "<sin _id>"))
+    print(f"\nDocumento seleccionado:")
+    print(f"  _id: {_id_str}")
+    print(f"  nombre: {doc.get('nombre', '<sin nombre>')}")
+    print()
+
+    # 5) Preguntar qué campo actualizar
+    print("¿Qué campo deseas actualizar?")
+    print("  1) nombre")
+    print("  2) fecha de fundación")
+    print("  3) valor en bolsa")
+    campo_choice = input("Elige 1-3 (o 'salir'): ").strip()
+    if campo_choice.lower() == "salir":
+        print("⚠️ Actualización cancelada por el usuario.")
+        return
+
+    if campo_choice not in ("1", "2", "3"):
+        print("❌ Opción de campo inválida. Debe ser 1, 2 ó 3.")
+        return
+
+    # 6) Según elección, pedimos y validamos el nuevo valor
+    operador_set = {}
+    if campo_choice == "1":
+        # Actualizar 'nombre'
+        nuevo_nombre = input("Nuevo nombre: ").strip()
+        if nuevo_nombre.lower() == "salir":
+            print("⚠️ Actualización cancelada por el usuario.")
+            return
+        if not nuevo_nombre:
+            print("❌ El nombre no puede quedar vacío.")
+            return
+        # Comprobar que no exista ya otro con el mismo nombre
+        if coll.find_one({"nombre": nuevo_nombre}):
+            print(f"❌ Ya existe otra plataforma con el nombre '{nuevo_nombre}'.")
+            return
+        operador_set = {"$set": {"nombre": nuevo_nombre}}
+
+    elif campo_choice == "2":
+        # Actualizar 'fechaFundacion'
+        fecha_str = input("Nueva fecha de fundación (YYYY-MM-DD): ").strip()
+        if fecha_str.lower() == "salir":
+            print("⚠️ Actualización cancelada por el usuario.")
+            return
+        try:
+            dt = datetime.strptime(fecha_str, "%Y-%m-%d")
+            nuevo_fecha_iso = dt.strftime("%Y-%m-%dT00:00:00Z")
+        except ValueError:
+            print("❌ Formato de fecha inválido. Debe ser YYYY-MM-DD.")
+            return
+        operador_set = {"$set": {"fechaFundacion": nuevo_fecha_iso}}
+
+    else:  # campo_choice == "3"
+        # Actualizar 'valorEnBolsa'
+        valor_str = input("Nuevo valor en bolsa (número > 0): ").strip()
+        if valor_str.lower() == "salir":
+            print("⚠️ Actualización cancelada por el usuario.")
+            return
+        try:
+            nuevo_valor = float(valor_str)
+            if nuevo_valor <= 0:
+                print("❌ El valor debe ser mayor que cero.")
+                return
+        except ValueError:
+            print("❌ Debes introducir un número válido.")
+            return
+        operador_set = {"$set": {"valorEnBolsa": nuevo_valor}}
+
+    # 7) Mostrar resumen antes de aplicar
+    print("\nResumen de la actualización:")
+    if campo_choice == "1":
+        print(f"  Campo: nombre")
+        print(f"  De: {doc.get('nombre')}")
+        print(f"  A: {nuevo_nombre}")
+    elif campo_choice == "2":
+        print(f"  Campo: fechaFundacion")
+        print(f"  De: {doc.get('fechaFundacion')}")
+        print(f"  A: {nuevo_fecha_iso}")
+    else:
+        print(f"  Campo: valorEnBolsa")
+        print(f"  De: {doc.get('valorEnBolsa')}")
+        print(f"  A: {nuevo_valor}")
+
+    confirmar = input("\n¿Confirmar actualización? (s/n): ").strip().lower()
+    if confirmar != "s":
+        print("⚠️ Actualización cancelada por el usuario.")
+        return
+
+    # 8) Llamar a la función que actualiza en MongoDB
+    actualizar_uno(coll, {"_id": doc["_id"]}, operador_set)
 
 def eliminar_menu(coll):
     """
