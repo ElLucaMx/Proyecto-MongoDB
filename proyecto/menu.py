@@ -1,13 +1,15 @@
 # menu.py
 
-from operaciones import insertar_documento, eliminar_documento, actualizar_documento
-from consultas import consulta_simple, consulta_array, consulta_embebido, consulta_agrupacion
+import re
+from datetime import datetime
+
+from operaciones import insertar_documento
 from db import get_collection
 
 def run_menu():
-    salir=False
     coll = get_collection()
-    while salir==False:
+
+    while True:
         print("\n=== MENÚ PRINCIPAL ===")
         print("1) Insertar documento")
         print("2) Eliminar documento")
@@ -19,43 +21,97 @@ def run_menu():
         if opcion == "1":
             insertar_menu(coll)
         elif opcion == "2":
-            eliminar_menu(coll)
+            # Lógica de eliminación...
+            pass
         elif opcion == "3":
-            actualizar_menu(coll)
+            # Lógica de actualización...
+            pass
         elif opcion == "4":
-            consultas_menu(coll)
+            # Lógica de consultas...
+            pass
         elif opcion == "5":
             print("– ¡Hasta luego!")
-            salir=True
+            break
         else:
-            print("Opción no válida. Intenta de nuevo.")
+            print("❌ Opción no válida. Intenta de nuevo.")
 
 def insertar_menu(coll):
-    # Pedir al usuario los campos necesarios, luego llamar a insertar_documento(coll, datos)
-    ...
+    """
+    Solicita al usuario los datos mínimos para crear un documento (plataforma).
+    Solo pide: nombre, fecha de fundación y valor en bolsa.
+    El usuario puede teclear 'salir' en cualquier momento para cancelar.
+    Valida:
+     - Nombre no vacío
+     - Fecha en formato YYYY-MM-DD
+     - Valor en bolsa numérico y positivo
+     - No duplicar nombres existentes
+    """
+    print("\n--- INSERTAR NUEVA PLATAFORMA ---")
+    print("Escribe 'salir' en cualquier momento para cancelar.")
 
-def eliminar_menu(coll):
-    # Pedir criterio de eliminación, luego llamar a eliminar_documento(coll, criterio)
-    ...
+    # 1) Nombre
+    while True:
+        nombre = input("Nombre de la plataforma: ").strip()
+        if nombre.lower() == "salir":
+            print("⚠️ Inserción cancelada por el usuario.")
+            return
+        if not nombre:
+            print("❌ El nombre no puede estar vacío. Inténtalo de nuevo.")
+            continue
 
-def actualizar_menu(coll):
-    # Pedir criterio + datos nuevos, luego llamar a actualizar_documento(coll, criterio, cambios)
-    ...
+        # Verificar si ya existe otra entrada con el mismo nombre (evitar duplicados)
+        existente = coll.find_one({"nombre": nombre})
+        if existente:
+            print(f"❌ Ya existe una plataforma con el nombre '{nombre}'. Elige otro o escribe 'salir' para cancelar.")
+            continue
 
-def consultas_menu(coll):
-    print("\n--- CONSULTAS DISPONIBLES ---")
-    print("a) Consulta simple")
-    print("b) Consulta con arrays")
-    print("c) Consulta con documentos embebidos")
-    print("d) Consulta de agrupación")
-    tipo = input("Elige tipo de consulta [a-d]: ").strip().lower()
-    if tipo == "a":
-        consulta_simple(coll)
-    elif tipo == "b":
-        consulta_array(coll)
-    elif tipo == "c":
-        consulta_embebido(coll)
-    elif tipo == "d":
-        consulta_agrupacion(coll)
-    else:
-        print("Opción de consulta no válida.")
+        break
+
+    # 2) Fecha de fundación
+    while True:
+        fecha_input = input("Fecha de fundación (YYYY-MM-DD): ").strip()
+        if fecha_input.lower() == "salir":
+            print("⚠️ Inserción cancelada por el usuario.")
+            return
+        try:
+            # Intentamos parsear con datetime para validar formato
+            dt = datetime.strptime(fecha_input, "%Y-%m-%d")
+            fecha_iso = dt.strftime("%Y-%m-%dT00:00:00Z")
+            break
+        except ValueError:
+            print("❌ Formato de fecha inválido. Debe ser YYYY-MM-DD (ej. 2001-11-15).")
+
+    # 3) Valor en bolsa
+    while True:
+        valor_str = input("Valor en bolsa (número > 0): ").strip()
+        if valor_str.lower() == "salir":
+            print("⚠️ Inserción cancelada por el usuario.")
+            return
+        try:
+            valor = float(valor_str)
+            if valor <= 0:
+                print("❌ El valor debe ser un número mayor que 0.")
+                continue
+            break
+        except ValueError:
+            print("❌ Debes introducir un número válido (p.ej. 12345678.90).")
+
+    # Construimos el documento mínimo
+    nuevo_doc = {
+        "nombre": nombre,
+        "fechaFundacion": fecha_iso,
+        "valorEnBolsa": valor,
+        "exclusivos": [],
+        "subempresa": {}
+    }
+
+    # Confirmar antes de insertar
+    print("\nRevisa el documento a insertar:")
+    print(nuevo_doc)
+    confirmar = input("¿Confirmar inserción? (s/n): ").strip().lower()
+    if confirmar != "s":
+        print("⚠️ Inserción cancelada por el usuario.")
+        return
+
+    # Llamamos a la función que hace el insert_one
+    insertar_documento(coll, nuevo_doc)
